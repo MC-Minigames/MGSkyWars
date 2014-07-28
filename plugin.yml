@@ -1,0 +1,12 @@
+name: MGSkyWars
+main: com.comze_instancelabs.mgskywars.Main
+version: 1.0.0
+author: InstanceLabs
+softdepend: [Vault, MinigamesAPI]
+depend: [MinigamesAPI]
+loadbefore: [MinigamesAPI]
+commands:
+   sw:
+      description: Main command
+      usage: /sw [action]
+      aliases: [skywars, mgskywars]
