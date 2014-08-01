@@ -6,6 +6,7 @@ import org.bukkit.Material;
 
 import com.comze_instancelabs.minigamesapi.Arena;
 import com.comze_instancelabs.minigamesapi.ArenaType;
+import com.comze_instancelabs.minigamesapi.util.Util;
 
 public class IArena extends Arena {
 
@@ -18,7 +19,7 @@ public class IArena extends Arena {
 
 	@Override
 	public void spectate(String playername) {
-		Bukkit.getPlayer(playername).getInventory().clear();
+		Util.clearInv(Bukkit.getPlayer(playername));
 		super.spectate(playername);
 	}
 	

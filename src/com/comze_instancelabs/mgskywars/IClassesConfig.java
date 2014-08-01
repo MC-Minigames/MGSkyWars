@@ -8,16 +8,25 @@ public class IClassesConfig extends ClassesConfig {
 
 	public IClassesConfig(JavaPlugin plugin) {
 		super(plugin, true);
-    	this.getConfig().options().header("Used for saving classes. Default class:");
-    	this.getConfig().addDefault("config.kits.default.name", "default");
-    	this.getConfig().addDefault("config.kits.default.items", "261:0#ARROW_INFINITE:1#KNOCKBACK:2*1;280:0#KNOCKBACK:5*1;262:0*1");
-    	this.getConfig().addDefault("config.kits.default.lore", "The default class.");
-    	this.getConfig().addDefault("config.kits.default.requires_money", false);
-    	this.getConfig().addDefault("config.kits.default.requires_permission", false);
-    	this.getConfig().addDefault("config.kits.default.money_amount", 100);
-    	this.getConfig().addDefault("config.kits.default.permission_node", "minigames.kits.default");
-    	this.getConfig().options().copyDefaults(true);
-    	this.saveConfig();
+		this.getConfig().options().header("Used for saving classes. Default class:");
+		this.getConfig().addDefault("config.kits.default.name", "default");
+		this.getConfig().addDefault("config.kits.default.items", "261:0#ARROW_INFINITE:1#KNOCKBACK:1*1;262:0*1;270*1");
+		this.getConfig().addDefault("config.kits.default.lore", "The default class.");
+		this.getConfig().addDefault("config.kits.default.requires_money", false);
+		this.getConfig().addDefault("config.kits.default.requires_permission", false);
+		this.getConfig().addDefault("config.kits.default.money_amount", 100);
+		this.getConfig().addDefault("config.kits.default.permission_node", "minigames.kits.default");
+
+		this.getConfig().addDefault("config.kits.pro.name", "pro");
+		this.getConfig().addDefault("config.kits.pro.items", "272*1;274*1;261:0#ARROW_INFINITE:1#KNOCKBACK:1*1;262:0*1");
+		this.getConfig().addDefault("config.kits.pro.lore", "The Pro class.");
+		this.getConfig().addDefault("config.kits.pro.requires_money", false);
+		this.getConfig().addDefault("config.kits.pro.requires_permission", false);
+		this.getConfig().addDefault("config.kits.pro.money_amount", 100);
+		this.getConfig().addDefault("config.kits.pro.permission_node", "minigames.kits.pro");
+
+		this.getConfig().options().copyDefaults(true);
+		this.saveConfig();
 	}
 
 }

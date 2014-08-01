@@ -1,35 +1,20 @@
 package com.comze_instancelabs.mgskywars;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.BlockIterator;
 
 import com.comze_instancelabs.minigamesapi.Arena;
 import com.comze_instancelabs.minigamesapi.ArenaSetup;
@@ -57,6 +42,7 @@ public class Main extends JavaPlugin implements Listener {
 		pinstance.addLoadedArenas(loadArenas(this, pinstance.getArenasConfig()));
 		Bukkit.getPluginManager().registerEvents(this, this);
 		pinstance.arenaSetup = new IArenaSetup();
+		pinstance.getArenaListener().loseY = 20;
 		pli = pinstance;
 	}
 
@@ -86,6 +72,15 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+		if (pli.global_players.containsKey(event.getPlayer().getName())) {
+			if (pli.global_players.get(event.getPlayer().getName()).getArenaState() != ArenaState.INGAME) {
+				event.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.getBlock().getType() == Material.DRAGON_EGG) {
 			Player p = event.getPlayer();
@@ -94,12 +89,11 @@ public class Main extends JavaPlugin implements Listener {
 			if (arenaname == null)
 				return;
 
-			if (!Validator.isArenaValid(this, arenaname)) {
-				p.sendMessage(ChatColor.RED + "Could not find arena.");
-				return;
-			}
+			/*
+			 * if (!Validator.isArenaValid(this, arenaname)) { p.sendMessage(ChatColor.RED + "Could not find arena."); return; }
+			 */
 
-			int i = pli.arenaSetup.autoSetSpawn(this, arenaname, event.getBlock().getLocation().clone().add(0D, 7D, 0D));
+			int i = pli.arenaSetup.autoSetSpawn(this, arenaname, event.getBlock().getLocation().clone().add(0.5D, 7D, 0.5D));
 			event.getPlayer().sendMessage(pli.getMessagesConfig().successfully_set.replaceAll("<component>", "spawn " + Integer.toString(i)));
 
 			Location l = event.getBlock().getLocation();
