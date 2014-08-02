@@ -1,8 +1,13 @@
 package com.comze_instancelabs.mgskywars;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
 import com.comze_instancelabs.minigamesapi.Arena;
 import com.comze_instancelabs.minigamesapi.ArenaType;
@@ -31,6 +36,20 @@ public class IArena extends Arena {
 		}
 	}
 
-
+	@Override
+	public void leavePlayer(String p, boolean fullLeave){
+		/*List<Entity> t = Bukkit.getPlayer(p).getNearbyEntities(20D, 20D, 20D);
+		for(Entity t_ : t){
+			t_.remove();
+		}*/
+		for(Location t : this.getSpawns()){
+			for(Entity t_ : t.getChunk().getEntities()){
+				if(t_.getType() == EntityType.DROPPED_ITEM){
+					t_.remove();
+				}
+			}
+		}
+		super.leavePlayer(p, fullLeave);
+	}
 
 }
