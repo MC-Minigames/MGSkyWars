@@ -84,10 +84,17 @@ public class Main extends JavaPlugin implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.getBlock().getType() == Material.DRAGON_EGG) {
 			Player p = event.getPlayer();
-			String arenaname = event.getItemInHand().getItemMeta().getDisplayName();
+			String arenaname_ = event.getItemInHand().getItemMeta().getDisplayName();
 
-			if (arenaname == null)
+			if (arenaname_ == null)
 				return;
+
+			String args[] = arenaname_.split(":");
+			String plugin = args[0];
+			if (!plugin.equalsIgnoreCase("mgsykwars")) {
+				return;
+			}
+			String arenaname = args[1];
 
 			/*
 			 * if (!Validator.isArenaValid(this, arenaname)) { p.sendMessage(ChatColor.RED + "Could not find arena."); return; }
