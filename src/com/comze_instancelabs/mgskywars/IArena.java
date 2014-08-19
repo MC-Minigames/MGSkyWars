@@ -38,6 +38,10 @@ public class IArena extends Arena {
 		final IArena a = this;
 		Bukkit.getScheduler().runTaskLater(m, new Runnable() {
 			public void run() {
+				for (Location t : a.getSpawns()) {
+					Location temp = t.clone().add(0D, -2D, 0D);
+					temp.getBlock().setType(Material.GLASS);
+				}
 				for (String p_ : a.getAllPlayers()) {
 					if (Validator.isPlayerOnline(p_)) {
 						Bukkit.getPlayer(p_).setHealth(20D);
