@@ -47,7 +47,7 @@ public class Main extends JavaPlugin implements Listener {
 		pinstance.setArenaListener(t);
 
 		pinstance.arenaSetup = new IArenaSetup();
-		pinstance.getArenaListener().loseY = 20;
+		pinstance.getArenaListener().loseY = 100;
 		pli = pinstance;
 	}
 
