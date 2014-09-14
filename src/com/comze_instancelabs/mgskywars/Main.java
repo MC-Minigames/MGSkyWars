@@ -49,6 +49,11 @@ public class Main extends JavaPlugin implements Listener {
 		pinstance.arenaSetup = new IArenaSetup();
 		pinstance.getArenaListener().loseY = 100;
 		pli = pinstance;
+
+		this.getConfig().addDefault("config.spawn_glass_blocks", true);
+
+		this.getConfig().options().copyDefaults(true);
+		this.saveConfig();
 	}
 
 	public static ArrayList<Arena> loadArenas(JavaPlugin plugin, ArenasConfig cf) {
@@ -108,22 +113,24 @@ public class Main extends JavaPlugin implements Listener {
 			int i = pli.arenaSetup.autoSetSpawn(this, arenaname, event.getBlock().getLocation().clone().add(0.5D, 7D, 0.5D));
 			event.getPlayer().sendMessage(pli.getMessagesConfig().successfully_set.replaceAll("<component>", "spawn " + Integer.toString(i)));
 
-			Location l = event.getBlock().getLocation();
-			l.clone().add(0D, 5D, 0D).getBlock().setType(Material.GLASS);
-			l.clone().add(0D, 6D, 1D).getBlock().setType(Material.GLASS);
-			l.clone().add(0D, 6D, -1D).getBlock().setType(Material.GLASS);
-			l.clone().add(1D, 6D, 0D).getBlock().setType(Material.GLASS);
-			l.clone().add(-1D, 6D, 0D).getBlock().setType(Material.GLASS);
-			l.clone().add(0D, 7D, 1D).getBlock().setType(Material.GLASS);
-			l.clone().add(0D, 7D, -1D).getBlock().setType(Material.GLASS);
-			l.clone().add(1D, 7D, 0D).getBlock().setType(Material.GLASS);
-			l.clone().add(-1D, 7D, 0D).getBlock().setType(Material.GLASS);
-			l.clone().add(0D, 8D, 1D).getBlock().setType(Material.GLASS);
-			l.clone().add(0D, 8D, -1D).getBlock().setType(Material.GLASS);
-			l.clone().add(1D, 8D, 0D).getBlock().setType(Material.GLASS);
-			l.clone().add(-1D, 8D, 0D).getBlock().setType(Material.GLASS);
-			l.clone().add(0D, 9D, 0D).getBlock().setType(Material.GLASS);
-			event.setCancelled(true);
+			if (this.getConfig().getBoolean("config.spawn_glass_blocks")) {
+				Location l = event.getBlock().getLocation();
+				l.clone().add(0D, 5D, 0D).getBlock().setType(Material.GLASS);
+				l.clone().add(0D, 6D, 1D).getBlock().setType(Material.GLASS);
+				l.clone().add(0D, 6D, -1D).getBlock().setType(Material.GLASS);
+				l.clone().add(1D, 6D, 0D).getBlock().setType(Material.GLASS);
+				l.clone().add(-1D, 6D, 0D).getBlock().setType(Material.GLASS);
+				l.clone().add(0D, 7D, 1D).getBlock().setType(Material.GLASS);
+				l.clone().add(0D, 7D, -1D).getBlock().setType(Material.GLASS);
+				l.clone().add(1D, 7D, 0D).getBlock().setType(Material.GLASS);
+				l.clone().add(-1D, 7D, 0D).getBlock().setType(Material.GLASS);
+				l.clone().add(0D, 8D, 1D).getBlock().setType(Material.GLASS);
+				l.clone().add(0D, 8D, -1D).getBlock().setType(Material.GLASS);
+				l.clone().add(1D, 8D, 0D).getBlock().setType(Material.GLASS);
+				l.clone().add(-1D, 8D, 0D).getBlock().setType(Material.GLASS);
+				l.clone().add(0D, 9D, 0D).getBlock().setType(Material.GLASS);
+				event.setCancelled(true);
+			}
 		}
 	}
 
