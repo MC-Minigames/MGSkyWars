@@ -68,4 +68,10 @@ public class IArena extends Arena {
 		super.leavePlayer(p, fullLeave);
 	}
 
+	@Override
+	public void stop() {
+		m.temp.clear();
+		super.stop();
+	}
+
 }

@@ -25,6 +25,14 @@ public class IClassesConfig extends ClassesConfig {
 		this.getConfig().addDefault("config.kits.pro.money_amount", 100);
 		this.getConfig().addDefault("config.kits.pro.permission_node", "minigames.kits.pro");
 
+		this.getConfig().addDefault("config.kits.extra_life.name", "Extra_Life");
+		this.getConfig().addDefault("config.kits.extra_life.items", "351:1*1;272*1;274*1;261:0#ARROW_INFINITE:1#KNOCKBACK:1*1;262:0*1");
+		this.getConfig().addDefault("config.kits.extra_life.lore", "The extra life class.");
+		this.getConfig().addDefault("config.kits.extra_life.requires_money", false);
+		this.getConfig().addDefault("config.kits.extra_life.requires_permission", false);
+		this.getConfig().addDefault("config.kits.extra_life.money_amount", 100);
+		this.getConfig().addDefault("config.kits.extra_life.permission_node", "minigames.kits.extra_life");
+
 		this.getConfig().options().copyDefaults(true);
 		this.saveConfig();
 	}

@@ -1,10 +1,13 @@
 package com.comze_instancelabs.mgskywars;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,6 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comze_instancelabs.minigamesapi.Arena;
@@ -34,6 +39,11 @@ public class Main extends JavaPlugin implements Listener {
 	PluginInstance pli = null;
 	static Main m = null;
 	ICommandHandler cmdhandler = new ICommandHandler();
+	ChestsConfig chestsconfig;
+
+	boolean custom_chests = false;
+
+	HashMap<String, ArrayList<ItemStack>> chests = new HashMap<String, ArrayList<ItemStack>>();
 
 	public void onEnable() {
 		m = this;
@@ -54,6 +64,17 @@ public class Main extends JavaPlugin implements Listener {
 
 		this.getConfig().options().copyDefaults(true);
 		this.saveConfig();
+
+		chestsconfig = new ChestsConfig(this);
+		custom_chests = chestsconfig.getConfig().getBoolean("config.enabled");
+
+		if (chestsconfig.getConfig().isSet("config.chests.")) {
+			for (String c : chestsconfig.getConfig().getConfigurationSection("config.chests.").getKeys(false)) {
+				String rawitems = chestsconfig.getConfig().getString("config.chests." + c + ".items");
+				ArrayList<ItemStack> items = Util.parseItems(rawitems);
+				chests.put(c, items);
+			}
+		}
 	}
 
 	public static ArrayList<Arena> loadArenas(JavaPlugin plugin, ArenasConfig cf) {
@@ -146,6 +167,57 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 		}
+	}
+
+	ArrayList<Location> temp = new ArrayList<Location>();
+
+	@EventHandler
+	public void onInteract(PlayerInteractEvent event) {
+		if (!custom_chests) {
+			return;
+		}
+		if (event.hasBlock()) {
+			if (event.getClickedBlock().getType() == Material.CHEST) {
+				Player p = event.getPlayer();
+				if (pli.global_players.containsKey(p.getName())) {
+					Arena a = pli.global_players.get(p.getName());
+					if (a.getArenaState() == ArenaState.INGAME) {
+						if (!temp.contains(event.getClickedBlock().getLocation())) {
+							temp.add(event.getClickedBlock().getLocation());
+							Block b_ = event.getClickedBlock();
+							((Chest) b_.getState()).getBlockInventory().clear();
+							((Chest) b_.getState()).update();
+							ArrayList<ItemStack> items = getChestItems();
+							if (items != null) {
+								for (ItemStack i : items) {
+									if (i != null) {
+										((Chest) b_.getState()).getBlockInventory().addItem(i);
+									}
+								}
+							}
+							((Chest) b_.getState()).update();
+						}
+						a.getSmartReset().addChanged(event.getClickedBlock(), event.getClickedBlock().getType().equals(Material.CHEST));
+					}
+				}
+			}
+		}
+	}
+
+	// TODO check if this is really percentage randomness
+	public ArrayList<ItemStack> getChestItems() {
+		double r = Math.random() * 100;
+		int all = 0;
+		System.out.println(r);
+		for (String key : chests.keySet()) {
+			all += chestsconfig.getConfig().getInt("config.chests." + key + ".percentage");
+			System.out.println(all);
+			if (all > r) {
+				return chests.get(key);
+			}
+		}
+		System.out.println("");
+		return null;
 	}
 
 }
