@@ -157,7 +157,24 @@ public class Main extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
+		System.out.println("t");
 		Player dead = event.getEntity();
+		String playername = dead.getName();
+		if (m.pli.global_players.containsKey(playername)) {
+			event.getEntity().setHealth(20D);
+			Player p = (Player) event.getEntity();
+			p.setHealth(20D);
+			if (m.pli.getClassesHandler().hasClass(playername)) {
+				if (m.pli.getPClasses().get(playername).getInternalName().equalsIgnoreCase("extra_life")) {
+					try {
+						Util.teleportPlayerFixed(Bukkit.getPlayer(playername), m.pli.global_players.get(playername).getPSpawnLocs().get(playername));
+					} catch (Exception e) {
+						System.out.println("Your MinigamesLib version doesn't support the extra life kit, update please. " + e.getMessage());
+					}
+					return;
+				}
+			}
+		}
 		if (dead.getKiller() instanceof Player) {
 			Player killer = (Player) dead.getKiller();
 			if (pli.global_players.containsKey(dead.getName()) && pli.global_players.containsKey(killer.getName())) {
