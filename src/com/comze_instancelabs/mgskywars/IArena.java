@@ -17,6 +17,7 @@ import com.comze_instancelabs.minigamesapi.util.Validator;
 public class IArena extends Arena {
 
 	public static Main m;
+	ArrayList<String> used_extra_life = new ArrayList<String>();
 
 	public IArena(Main m, String arena_id) {
 		super(m, arena_id, ArenaType.REGENERATION);
@@ -25,7 +26,7 @@ public class IArena extends Arena {
 
 	@Override
 	public void spectate(String playername) {
-		if (m.pli.getClassesHandler().hasClass(playername)) {
+		/*if (m.pli.getClassesHandler().hasClass(playername)) {
 			if (m.pli.getPClasses().get(playername).getInternalName().equalsIgnoreCase("extra_life")) {
 				try {
 					super.getClass().getDeclaredField("pspawnloc");
@@ -35,7 +36,7 @@ public class IArena extends Arena {
 				}
 				return;
 			}
-		}
+		}*/
 		Util.clearInv(Bukkit.getPlayer(playername));
 		super.spectate(playername);
 	}
@@ -81,6 +82,7 @@ public class IArena extends Arena {
 
 	@Override
 	public void stop() {
+		this.used_extra_life.clear();
 		m.temp.clear();
 		super.stop();
 	}

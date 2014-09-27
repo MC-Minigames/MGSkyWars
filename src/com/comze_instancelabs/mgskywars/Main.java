@@ -157,7 +157,6 @@ public class Main extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		System.out.println("t");
 		Player dead = event.getEntity();
 		String playername = dead.getName();
 		if (m.pli.global_players.containsKey(playername)) {
@@ -167,11 +166,16 @@ public class Main extends JavaPlugin implements Listener {
 			if (m.pli.getClassesHandler().hasClass(playername)) {
 				if (m.pli.getPClasses().get(playername).getInternalName().equalsIgnoreCase("extra_life")) {
 					try {
-						Util.teleportPlayerFixed(Bukkit.getPlayer(playername), m.pli.global_players.get(playername).getPSpawnLocs().get(playername));
+						IArena a = (IArena) pli.global_players.get(playername);
+						if (!a.used_extra_life.contains(playername)) {
+							System.out.println("testt");
+							Util.teleportPlayerFixed(Bukkit.getPlayer(playername), m.pli.global_players.get(playername).getPSpawnLocs().get(playername));
+							a.used_extra_life.add(playername);
+							return;
+						}
 					} catch (Exception e) {
 						System.out.println("Your MinigamesLib version doesn't support the extra life kit, update please. " + e.getMessage());
 					}
-					return;
 				}
 			}
 		}
@@ -184,6 +188,7 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 		}
+		pli.getArenaListener().onPlayerDeath(event);
 	}
 
 	ArrayList<Location> temp = new ArrayList<Location>();
