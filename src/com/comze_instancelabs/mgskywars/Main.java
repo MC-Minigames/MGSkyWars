@@ -58,6 +58,11 @@ public class Main extends JavaPlugin implements Listener {
 
 		pinstance.arenaSetup = new IArenaSetup();
 		pinstance.getArenaListener().loseY = 100;
+		try{
+			pinstance.setAchievementGuiEnabled(true);
+		}catch(Exception e){
+			System.out.println("Update your MinigamesLib to the latest version to use the Achievement Gui.");
+		}
 		pli = pinstance;
 
 		this.getConfig().addDefault("config.spawn_glass_blocks", true);
