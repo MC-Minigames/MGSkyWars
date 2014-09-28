@@ -1,5 +1,6 @@
 package com.comze_instancelabs.mgskywars;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -59,7 +60,7 @@ public class Main extends JavaPlugin implements Listener {
 		pinstance.arenaSetup = new IArenaSetup();
 		pinstance.getArenaListener().loseY = 100;
 		try {
-			pinstance.getClass().getMethod("setAchievementGuiEnabled", Boolean.class);
+			pinstance.getClass().getMethod("setAchievementGuiEnabled", boolean.class);
 			pinstance.setAchievementGuiEnabled(true);
 		} catch (NoSuchMethodException e) {
 			System.out.println("Update your MinigamesLib to the latest version to use the Achievement Gui.");
