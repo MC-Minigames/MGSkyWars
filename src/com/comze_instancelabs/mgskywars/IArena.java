@@ -26,17 +26,19 @@ public class IArena extends Arena {
 
 	@Override
 	public void spectate(String playername) {
-		/*if (m.pli.getClassesHandler().hasClass(playername)) {
+		if (m.pli.getClassesHandler().hasClass(playername)) {
 			if (m.pli.getPClasses().get(playername).getInternalName().equalsIgnoreCase("extra_life")) {
 				try {
-					super.getClass().getDeclaredField("pspawnloc");
-					Util.teleportPlayerFixed(Bukkit.getPlayer(playername), this.getPSpawnLocs().get(playername));
-				} catch (NoSuchFieldException e) {
+					if (!used_extra_life.contains(playername)) {
+						Util.teleportPlayerFixed(Bukkit.getPlayer(playername), this.getPSpawnLocs().get(playername));
+						used_extra_life.add(playername);
+						return;
+					}
+				} catch (Exception e) {
 					System.out.println("Your MinigamesLib version doesn't support the extra life kit, update please. " + e.getMessage());
 				}
-				return;
 			}
-		}*/
+		}
 		Util.clearInv(Bukkit.getPlayer(playername));
 		super.spectate(playername);
 	}

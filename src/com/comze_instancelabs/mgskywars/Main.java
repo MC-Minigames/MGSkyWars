@@ -175,7 +175,6 @@ public class Main extends JavaPlugin implements Listener {
 					try {
 						IArena a = (IArena) pli.global_players.get(playername);
 						if (!a.used_extra_life.contains(playername)) {
-							System.out.println("testt");
 							Util.teleportPlayerFixed(Bukkit.getPlayer(playername), m.pli.global_players.get(playername).getPSpawnLocs().get(playername));
 							a.used_extra_life.add(playername);
 							return;
