@@ -3,6 +3,7 @@ package com.comze_instancelabs.mgskywars;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -244,8 +245,10 @@ public class Main extends JavaPlugin implements Listener {
 				return chests.get(key);
 			}
 		}
-		System.out.println("");
-		return null;
+		Random r_ = new Random();
+		Object[] values = chests.values().toArray();
+		ArrayList<ItemStack> randomContents = (ArrayList<ItemStack>) values[r_.nextInt(values.length)];
+		return randomContents;
 	}
 
 }
