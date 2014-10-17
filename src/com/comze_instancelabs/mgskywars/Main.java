@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -69,9 +70,17 @@ public class Main extends JavaPlugin implements Listener {
 		pli = pinstance;
 
 		this.getConfig().addDefault("config.spawn_glass_blocks", true);
-
 		this.getConfig().options().copyDefaults(true);
 		this.saveConfig();
+
+		final MessagesConfig msgconfig = pli.getMessagesConfig();
+		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+			public void run() {
+				msgconfig.getConfig().addDefault("messages.extra_life_msg", "&a<player> respawned because he used the extra life kit.");
+				msgconfig.getConfig().options().copyDefaults(true);
+				msgconfig.saveConfig();
+			}
+		}, 40L);
 
 		chestsconfig = new ChestsConfig(this);
 		custom_chests = chestsconfig.getConfig().getBoolean("config.enabled");
@@ -135,10 +144,6 @@ public class Main extends JavaPlugin implements Listener {
 			}
 			String arenaname = args[1];
 
-			/*
-			 * if (!Validator.isArenaValid(this, arenaname)) { p.sendMessage(ChatColor.RED + "Could not find arena."); return; }
-			 */
-
 			int i = pli.arenaSetup.autoSetSpawn(this, arenaname, event.getBlock().getLocation().clone().add(0.5D, 7D, 0.5D));
 			event.getPlayer().sendMessage(pli.getMessagesConfig().successfully_set.replaceAll("<component>", "spawn " + Integer.toString(i)));
 
@@ -178,6 +183,14 @@ public class Main extends JavaPlugin implements Listener {
 						if (!a.used_extra_life.contains(playername)) {
 							Util.teleportPlayerFixed(Bukkit.getPlayer(playername), m.pli.global_players.get(playername).getPSpawnLocs().get(playername));
 							a.used_extra_life.add(playername);
+							try {
+								String msg = ChatColor.translateAlternateColorCodes('&', pli.getMessagesConfig().getConfig().getString("messages.extra_life_msg"));
+								for (String p_ : a.getAllPlayers()) {
+									Util.sendMessage(Bukkit.getPlayer(p_), a.getName(), msg);
+								}
+							} catch (Exception e) {
+								;
+							}
 							return;
 						}
 					} catch (Exception e) {

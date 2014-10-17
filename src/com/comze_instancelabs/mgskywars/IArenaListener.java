@@ -24,6 +24,7 @@ public class IArenaListener extends ArenaListener {
 	}
 
 	@Override
+	@EventHandler
 	public void onHunger(FoodLevelChangeEvent event) {
 		//
 	}
