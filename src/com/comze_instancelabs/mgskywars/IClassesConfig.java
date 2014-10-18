@@ -15,6 +15,7 @@ public class IClassesConfig extends ClassesConfig {
 		this.getConfig().addDefault("config.kits.default.requires_money", false);
 		this.getConfig().addDefault("config.kits.default.requires_permission", false);
 		this.getConfig().addDefault("config.kits.default.money_amount", 100);
+		this.getConfig().addDefault("config.kits.default.enabled", true);
 		this.getConfig().addDefault("config.kits.default.permission_node", "minigames.kits.default");
 
 		this.getConfig().addDefault("config.kits.pro.name", "pro");
@@ -23,6 +24,7 @@ public class IClassesConfig extends ClassesConfig {
 		this.getConfig().addDefault("config.kits.pro.requires_money", false);
 		this.getConfig().addDefault("config.kits.pro.requires_permission", false);
 		this.getConfig().addDefault("config.kits.pro.money_amount", 100);
+		this.getConfig().addDefault("config.kits.pro.enabled", true);
 		this.getConfig().addDefault("config.kits.pro.permission_node", "minigames.kits.pro");
 
 		this.getConfig().addDefault("config.kits.extra_life.name", "Extra_Life");
@@ -31,6 +33,7 @@ public class IClassesConfig extends ClassesConfig {
 		this.getConfig().addDefault("config.kits.extra_life.requires_money", false);
 		this.getConfig().addDefault("config.kits.extra_life.requires_permission", false);
 		this.getConfig().addDefault("config.kits.extra_life.money_amount", 100);
+		this.getConfig().addDefault("config.kits.extra_life.enabled", true);
 		this.getConfig().addDefault("config.kits.extra_life.permission_node", "minigames.kits.extra_life");
 
 		this.getConfig().options().copyDefaults(true);

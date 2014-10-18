@@ -166,6 +166,9 @@ public class Main extends JavaPlugin implements Listener {
 				event.setCancelled(true);
 			}
 		}
+		if (event.getBlock().getType() == Material.CHEST) {
+			temp.add(event.getBlock().getLocation());
+		}
 	}
 
 	@EventHandler
