@@ -69,9 +69,6 @@ public class IArena extends Arena {
 
 	@Override
 	public void leavePlayer(String p, boolean fullLeave) {
-		/*
-		 * List<Entity> t = Bukkit.getPlayer(p).getNearbyEntities(20D, 20D, 20D); for(Entity t_ : t){ t_.remove(); }
-		 */
 		for (Location t : this.getSpawns()) {
 			for (Entity t_ : t.getChunk().getEntities()) {
 				if (t_.getType() == EntityType.DROPPED_ITEM) {

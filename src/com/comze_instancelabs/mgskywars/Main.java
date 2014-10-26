@@ -189,7 +189,7 @@ public class Main extends JavaPlugin implements Listener {
 							try {
 								String msg = ChatColor.translateAlternateColorCodes('&', pli.getMessagesConfig().getConfig().getString("messages.extra_life_msg"));
 								for (String p_ : a.getAllPlayers()) {
-									Util.sendMessage(Bukkit.getPlayer(p_), a.getName(), msg);
+									Bukkit.getPlayer(p_).sendMessage(msg.replaceAll("<player>", p.getName()));
 								}
 							} catch (Exception e) {
 								;
@@ -207,6 +207,7 @@ public class Main extends JavaPlugin implements Listener {
 			if (pli.global_players.containsKey(dead.getName()) && pli.global_players.containsKey(killer.getName())) {
 				Arena a = pli.global_players.get(dead.getName());
 				if (a != null) {
+					System.out.println(dead.getName());
 					a.spectate(dead.getName());
 				}
 			}
