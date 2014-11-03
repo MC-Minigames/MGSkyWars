@@ -254,10 +254,10 @@ public class Main extends JavaPlugin implements Listener {
 	public ArrayList<ItemStack> getChestItems() {
 		double r = Math.random() * 100;
 		int all = 0;
-		System.out.println(r);
+		// System.out.println(r);
 		for (String key : chests.keySet()) {
 			all += chestsconfig.getConfig().getInt("config.chests." + key + ".percentage");
-			System.out.println(all);
+			// System.out.println(all);
 			if (all > r) {
 				return chests.get(key);
 			}

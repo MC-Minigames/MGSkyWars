@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -32,6 +33,14 @@ public class IArena extends Arena {
 					if (!used_extra_life.contains(playername)) {
 						Util.teleportPlayerFixed(Bukkit.getPlayer(playername), this.getPSpawnLocs().get(playername));
 						used_extra_life.add(playername);
+						try {
+							String msg = ChatColor.translateAlternateColorCodes('&', m.pli.getMessagesConfig().getConfig().getString("messages.extra_life_msg"));
+							for (String p_ : this.getAllPlayers()) {
+								Bukkit.getPlayer(p_).sendMessage(msg.replaceAll("<player>", playername));
+							}
+						} catch (Exception e) {
+							;
+						}
 						return;
 					}
 				} catch (Exception e) {
