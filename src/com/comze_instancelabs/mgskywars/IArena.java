@@ -9,6 +9,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.comze_instancelabs.minigamesapi.Arena;
 import com.comze_instancelabs.minigamesapi.ArenaType;
@@ -54,6 +57,11 @@ public class IArena extends Arena {
 
 	@Override
 	public void started() {
+		for (String p_ : this.getAllPlayers()) {
+			if (Validator.isPlayerOnline(p_)) {
+				Bukkit.getPlayer(p_).addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 9999999, 2));
+			}
+		}
 		for (Location t : this.getSpawns()) {
 			Location temp = t.clone().add(0D, -2D, 0D);
 			temp.getBlock().setType(Material.AIR);
@@ -70,6 +78,7 @@ public class IArena extends Arena {
 				for (String p_ : a.getAllPlayers()) {
 					if (Validator.isPlayerOnline(p_)) {
 						Bukkit.getPlayer(p_).setHealth(20D);
+						Bukkit.getPlayer(p_).removePotionEffect(PotionEffectType.ABSORPTION);
 					}
 				}
 			}
