@@ -1,8 +1,9 @@
 package com.comze_instancelabs.mgskywars;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +24,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comze_instancelabs.minigamesapi.Arena;
@@ -46,7 +50,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	boolean custom_chests = false;
 
-	HashMap<String, ArrayList<ItemStack>> chests = new HashMap<String, ArrayList<ItemStack>>();
+	LinkedHashMap<String, HashMap<ItemStack, Integer>> chests = new LinkedHashMap<String, HashMap<ItemStack, Integer>>();
 
 	public void onEnable() {
 		m = this;
@@ -88,7 +92,7 @@ public class Main extends JavaPlugin implements Listener {
 		if (chestsconfig.getConfig().isSet("config.chests.")) {
 			for (String c : chestsconfig.getConfig().getConfigurationSection("config.chests.").getKeys(false)) {
 				String rawitems = chestsconfig.getConfig().getString("config.chests." + c + ".items");
-				ArrayList<ItemStack> items = Util.parseItems(rawitems);
+				HashMap<ItemStack, Integer> items = parseItems(rawitems);
 				chests.put(c, items);
 			}
 		}
@@ -167,7 +171,9 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 		if (event.getBlock().getType() == Material.CHEST) {
-			temp.add(event.getBlock().getLocation());
+			if (pli.global_players.containsKey(event.getPlayer().getName())) {
+				temp.add(event.getBlock().getLocation());
+			}
 		}
 	}
 
@@ -250,22 +256,161 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	// TODO check if this is really percentage randomness
 	public ArrayList<ItemStack> getChestItems() {
+		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
 		double r = Math.random() * 100;
 		int all = 0;
-		// System.out.println(r);
 		for (String key : chests.keySet()) {
 			all += chestsconfig.getConfig().getInt("config.chests." + key + ".percentage");
-			// System.out.println(all);
 			if (all > r) {
-				return chests.get(key);
+				HashMap<ItemStack, Integer> temp = chests.get(key);
+				for (ItemStack item : temp.keySet()) {
+					int i = (int) (Math.random() * 100);
+					if (i <= temp.get(item)) {
+						ret.add(item);
+					}
+				}
+				break;
 			}
 		}
+		if (ret.size() > 0) {
+			return ret;
+		}
 		Random r_ = new Random();
-		Object[] values = chests.values().toArray();
-		ArrayList<ItemStack> randomContents = (ArrayList<ItemStack>) values[r_.nextInt(values.length)];
-		return randomContents;
+		Object[] keys = chests.keySet().toArray();
+		HashMap<ItemStack, Integer> randomContents = (HashMap<ItemStack, Integer>) chests.get(keys[r_.nextInt(keys.length)]);
+		for (ItemStack item : randomContents.keySet()) {
+			if (Math.random() * 100 >= randomContents.get(item)) {
+				ret.add(item);
+			}
+		}
+		return ret;
+	}
+
+	// example items: 351:6#ALL_DAMAGE:2#KNOCKBACK:2*1=NAME:LORE;267*1;3*64;3*64
+	public static HashMap<ItemStack, Integer> parseItems(String rawitems) {
+		HashMap<ItemStack, Integer> ret = new HashMap<ItemStack, Integer>();
+
+		try {
+			String[] a = rawitems.split(";");
+
+			for (String rawitem : a) {
+				int nameindex = rawitem.indexOf("=");
+				String[] c = rawitem.split("\\*");
+				int optional_armor_color_index = -1;
+				int optional_skywars_percentage_index = -1;
+				String itemid = c[0];
+				String itemdata = "0";
+				String[] enchantments_ = itemid.split("#");
+				String[] enchantments = new String[enchantments_.length - 1];
+				if (enchantments_.length > 1) {
+					for (int i = 1; i < enchantments_.length; i++) {
+						enchantments[i - 1] = enchantments_[i];
+					}
+				}
+				itemid = enchantments_[0];
+				String[] d = itemid.split(":");
+				if (d.length > 1) {
+					itemid = d[0];
+					itemdata = d[1];
+				}
+				String itemamount = "1";
+				if (c.length > 1) {
+					itemamount = c[1];
+					optional_armor_color_index = c[1].indexOf("#");
+					optional_skywars_percentage_index = c[1].indexOf("%");
+					if (optional_armor_color_index > 0) {
+						itemamount = c[1].substring(0, optional_armor_color_index);
+					} else {
+						if (optional_skywars_percentage_index > 0) {
+							itemamount = c[1].substring(0, optional_skywars_percentage_index);
+						}
+					}
+				}
+				if (nameindex > -1) {
+					itemamount = c[1].substring(0, c[1].indexOf("="));
+				}
+				if (Integer.parseInt(itemid) < 1) {
+					System.out.println("Invalid item id: " + itemid);
+					continue;
+				}
+				ItemStack nitem = new ItemStack(Integer.parseInt(itemid), Integer.parseInt(itemamount), (short) Integer.parseInt(itemdata));
+				ItemMeta m = nitem.getItemMeta();
+				if (nitem.getType() != Material.ENCHANTED_BOOK) {
+					for (String enchant : enchantments) {
+						String[] e = enchant.split(":");
+						String ench = e[0];
+						String lv = "1";
+						if (e.length > 1) {
+							lv = e[1];
+						}
+						if (Enchantment.getByName(ench) != null) {
+							m.addEnchant(Enchantment.getByName(ench), Integer.parseInt(lv), true);
+						}
+					}
+				}
+
+				if (nameindex > -1) {
+					String namelore = rawitem.substring(nameindex + 1);
+					String name = "";
+					String lore = "";
+					int i = namelore.indexOf(":");
+					if (i > -1) {
+						name = namelore.substring(0, i);
+						lore = namelore.substring(i + 1);
+					} else {
+						name = namelore;
+					}
+					m.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+					m.setLore(Arrays.asList(lore));
+				}
+
+				int optional_skywars_percentage = 100;
+				if (optional_skywars_percentage_index > -1) {
+					optional_skywars_percentage = Integer.parseInt(c[1].substring(optional_skywars_percentage_index + 1));
+				} else {
+					optional_skywars_percentage_index = c[1].length() - 1;
+				}
+
+				// RGB Color support for Armor
+				if (optional_armor_color_index > -1) {
+					m.setDisplayName(c[1].substring(optional_armor_color_index, optional_skywars_percentage_index));
+				}
+
+				nitem.setItemMeta(m);
+				if (nitem.getType() == Material.ENCHANTED_BOOK) {
+					try {
+						EnchantmentStorageMeta meta = (EnchantmentStorageMeta) nitem.getItemMeta();
+						for (String enchant : enchantments) {
+							String[] e = enchant.split(":");
+							String ench = e[0];
+							String lv = "1";
+							if (e.length > 1) {
+								lv = e[1];
+							}
+							if (Enchantment.getByName(ench) != null) {
+								meta.addStoredEnchant(Enchantment.getByName(ench), Integer.parseInt(lv), true);
+							}
+						}
+						nitem.setItemMeta(meta);
+					} catch (Exception e) {
+						System.out.println("Failed parsing enchanted book. " + e.getMessage());
+					}
+				}
+				ret.put(nitem, optional_skywars_percentage);
+			}
+			if (ret == null || ret.size() < 1) {
+				MinigamesAPI.getAPI().getLogger().severe("Found invalid class in config!");
+			}
+		} catch (Exception e) {
+			System.out.println("Failed to load class items: " + e.getMessage() + " at [1] " + e.getStackTrace()[1].getLineNumber() + " [0] " + e.getStackTrace()[0].getLineNumber());
+			ItemStack rose = new ItemStack(Material.RED_ROSE);
+			ItemMeta im = rose.getItemMeta();
+			im.setDisplayName(ChatColor.RED + "Sowwy, failed to load class.");
+			rose.setItemMeta(im);
+			ret.put(rose, 100);
+		}
+		return ret;
 	}
 
 }

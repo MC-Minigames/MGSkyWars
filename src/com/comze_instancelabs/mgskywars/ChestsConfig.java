@@ -20,7 +20,7 @@ public class ChestsConfig {
 
 		this.getConfig().addDefault("config.enabled", false);
 
-		this.getConfig().addDefault("config.chests.chest1.items", "5*64;5*64;5*64;5*64;262*64;278*1");
+		this.getConfig().addDefault("config.chests.chest1.items", "5*64;5*64;5*64;5*64;262*64;278*1;5*64%30");
 		this.getConfig().addDefault("config.chests.chest1.percentage", 5);
 
 		this.getConfig().addDefault("config.chests.chest2.items", "5*64;262*64;267*1");
