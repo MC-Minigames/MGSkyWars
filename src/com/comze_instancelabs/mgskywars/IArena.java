@@ -88,9 +88,11 @@ public class IArena extends Arena {
 	@Override
 	public void leavePlayer(String p, boolean fullLeave) {
 		for (Location t : this.getSpawns()) {
-			for (Entity t_ : t.getChunk().getEntities()) {
-				if (t_.getType() == EntityType.DROPPED_ITEM) {
-					t_.remove();
+			if (t != null) {
+				for (Entity t_ : t.getChunk().getEntities()) {
+					if (t_.getType() == EntityType.DROPPED_ITEM) {
+						t_.remove();
+					}
 				}
 			}
 		}
