@@ -143,7 +143,7 @@ public class Main extends JavaPlugin implements Listener {
 
 			String args[] = arenaname_.split(":");
 			String plugin = args[0];
-			if (!plugin.equalsIgnoreCase("mgsykwars")) {
+			if (!plugin.equalsIgnoreCase("mgskywars")) {
 				return;
 			}
 			String arenaname = args[1];
@@ -315,18 +315,27 @@ public class Main extends JavaPlugin implements Listener {
 					itemdata = d[1];
 				}
 				String itemamount = "1";
+				String mod = "";
 				if (c.length > 1) {
-					itemamount = c[1];
-					optional_armor_color_index = c[1].indexOf("#");
-					optional_skywars_percentage_index = c[1].indexOf("%");
+					mod = c[1];
+					itemamount = mod;
+					optional_armor_color_index = mod.indexOf("#");
+					optional_skywars_percentage_index = mod.indexOf("%");
 					if (optional_armor_color_index > 0) {
-						itemamount = c[1].substring(0, optional_armor_color_index);
+						itemamount = mod.substring(0, optional_armor_color_index);
 					} else {
 						if (optional_skywars_percentage_index > 0) {
-							itemamount = c[1].substring(0, optional_skywars_percentage_index);
+							itemamount = mod.substring(0, optional_skywars_percentage_index);
 						}
 					}
+				} else {
+					mod = itemid;
+					optional_skywars_percentage_index = mod.indexOf("%");
+					if (optional_skywars_percentage_index > 0) {
+						itemid = mod.substring(0, optional_skywars_percentage_index);
+					}
 				}
+				
 				if (nameindex > -1) {
 					itemamount = c[1].substring(0, c[1].indexOf("="));
 				}
@@ -367,14 +376,12 @@ public class Main extends JavaPlugin implements Listener {
 
 				int optional_skywars_percentage = 100;
 				if (optional_skywars_percentage_index > -1) {
-					optional_skywars_percentage = Integer.parseInt(c[1].substring(optional_skywars_percentage_index + 1));
-				} else {
-					optional_skywars_percentage_index = c[1].length() - 1;
+					optional_skywars_percentage = Integer.parseInt(mod.substring(optional_skywars_percentage_index + 1));
 				}
 
 				// RGB Color support for Armor
-				if (optional_armor_color_index > -1) {
-					m.setDisplayName(c[1].substring(optional_armor_color_index, optional_skywars_percentage_index));
+				if (optional_armor_color_index > -1 && optional_skywars_percentage_index > -1) {
+					m.setDisplayName(mod.substring(optional_armor_color_index, optional_skywars_percentage_index));
 				}
 
 				nitem.setItemMeta(m);
@@ -403,6 +410,9 @@ public class Main extends JavaPlugin implements Listener {
 				MinigamesAPI.getAPI().getLogger().severe("Found invalid class in config!");
 			}
 		} catch (Exception e) {
+			if (MinigamesAPI.debug) {
+				e.printStackTrace();
+			}
 			System.out.println("Failed to load class items: " + e.getMessage() + " at [1] " + e.getStackTrace()[1].getLineNumber() + " [0] " + e.getStackTrace()[0].getLineNumber());
 			ItemStack rose = new ItemStack(Material.RED_ROSE);
 			ItemMeta im = rose.getItemMeta();
