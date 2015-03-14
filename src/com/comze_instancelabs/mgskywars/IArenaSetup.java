@@ -18,7 +18,7 @@ public class IArenaSetup extends ArenaSetup {
 	public Arena saveArena(JavaPlugin plugin, String arenaname) {
 		if (!Validator.isArenaValid(plugin, arenaname)) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Arena " + arenaname + " appears to be invalid.");
-			return null;
+			return true;
 		}
 		PluginInstance pli = MinigamesAPI.getAPI().pinstances.get(plugin);
 		if (pli.getArenaByName(arenaname) != null) {
